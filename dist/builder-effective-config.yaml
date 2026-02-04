@@ -1,0 +1,17 @@
+directories:
+  output: dist
+  buildResources: build
+appId: mnemomark
+productName: MnemoMark
+copyright: Copyright (c) 2026 MnemoMark
+buildVersion: 1.1.0
+win:
+  target: NSIS
+  icon: ./src/assets/icons/win/icon.ico
+  fileAssociations:
+    ext: pdf
+    icon: ./src/assets/icons/win/file.ico
+nsis:
+  artifactName: '${productName}Setup.${ext}'
+  uninstallDisplayName: '${productName}'
+electronVersion: 5.0.4

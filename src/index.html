@@ -1,0 +1,162 @@
+<!--
+    Copyright (c) 2019 Sagar Gurtu
+    Licensed under the MIT License.
+    See License in the project root for license information.
+-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>MnemoMark</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+
+<body>
+    <div id='leftSeek'>&lang;</div>
+    <div id='tabContainer'></div>
+    <div id='rightSeek'>&rang;</div>
+    <div id='backgroundInfo'>
+        <img id='backgroundLogo' src='assets/images/grayscale.png' />
+        <div id='backgroundText'>
+            Open a file from the menu or by pressing Ctrl + O
+        </div>
+        <div id="authEntry" class="auth-entry">
+            <div id="authEntryActions" class="auth-entry-actions">
+                <button id="showSignInBtn" class="btn btn-primary"
+                    onclick="window.authUI && window.authUI.showAuthModal && window.authUI.showAuthModal()">
+                    Sign In
+                </button>
+            </div>
+            <div id="authEntrySignedIn" class="auth-entry-signed-in" style="display: none;">
+                <div>
+                    Signed in as <span id="authEntryEmail"></span>
+                    <span id="authEntrySyncStatus" class="sync-status"></span>
+                </div>
+                <button id="authEntryAccountBtn" class="btn btn-secondary"
+                    onclick="window.authUI && window.authUI.showAccountModal && window.authService && window.authService.getCurrentUser && window.authUI.showAccountModal(window.authService.getCurrentUser())">
+                    Edit Account
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id='viewContainer'>
+        <iframe id='viewer'></iframe>
+    </div>
+    <button id="highlightActionButton" title="Save highlight">Save highlight</button>
+    <div id="highlightModal" class="highlight-modal" style="display: none;">
+        <div class="highlight-modal-content">
+            <div class="highlight-modal-header">
+                <h3 id="highlightModalTitle">Highlight Selection</h3>
+                <button id="highlightModalClose" class="highlight-modal-close">&times;</button>
+            </div>
+            <div class="highlight-modal-body">
+                <div id="highlightModalSelectedText" class="highlight-selected-text"></div>
+                <label class="highlight-modal-label">Tags (optional):</label>
+                <div id="highlightTagCheckboxes" class="highlight-tag-checkboxes"></div>
+                <label class="highlight-modal-label" for="highlightNoteInput">Note (optional):</label>
+                <textarea id="highlightNoteInput" class="highlight-note-input" rows="3"
+                    placeholder="Add a note about this highlight..."></textarea>
+            </div>
+            <div class="highlight-modal-actions">
+                <button id="highlightModalDelete" class="highlight-btn highlight-btn-danger" style="display: none;">Delete</button>
+                <div class="highlight-modal-actions-right">
+                    <button id="highlightModalCancel" class="highlight-btn highlight-btn-secondary">Cancel</button>
+                    <button id="highlightModalSave" class="highlight-btn highlight-btn-primary">Highlight</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="authModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2 id="authModalTitle">Sign In</h2>
+                <button class="modal-close" id="closeAuthModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="authError" class="auth-error" style="display: none;"></div>
+
+                <div id="signInForm">
+                    <div class="form-group">
+                        <label for="signInEmail">Email:</label>
+                        <input type="email" id="signInEmail" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signInPassword">Password:</label>
+                        <input type="password" id="signInPassword" placeholder="Enter your password" required>
+                    </div>
+                    <div class="form-group" style="margin-top: -10px; margin-bottom: 10px;">
+                        <button type="button" id="forgotPasswordBtn" class="btn-forgot-password">Forgot Password?</button>
+                    </div>
+                    <div class="form-actions">
+                        <button id="signInBtn" class="btn btn-primary">Sign In</button>
+                        <button id="switchToSignUpBtn" class="btn btn-secondary">Create Account</button>
+                    </div>
+                </div>
+
+                <div id="signUpForm" style="display: none;">
+                    <div class="form-group">
+                        <label for="signUpEmail">Email:</label>
+                        <input type="email" id="signUpEmail" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signUpPassword">Password:</label>
+                        <input type="password" id="signUpPassword" placeholder="Choose a password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password:</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm password" required>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="shareTagsCheckbox" checked>
+                            <span>Share tags between web extension and desktop app</span>
+                        </label>
+                        <small>If enabled, your tags will sync across both applications</small>
+                    </div>
+                    <div class="form-actions">
+                        <button id="signUpBtn" class="btn btn-primary">Create Account</button>
+                        <button id="switchToSignInBtn" class="btn btn-secondary">Already have an account?</button>
+                    </div>
+                </div>
+
+                <div id="forgotPasswordForm" style="display: none;">
+                    <div class="form-group">
+                        <label for="forgotPasswordEmail">Email:</label>
+                        <input type="email" id="forgotPasswordEmail" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-actions">
+                        <button id="sendResetEmailBtn" class="btn btn-primary">Send Reset Email</button>
+                        <button id="backToSignInBtn" class="btn btn-secondary">Back to Sign In</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="accountModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2>Account</h2>
+                <button class="modal-close" id="closeAccountModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 16px; color: #b0b0b0;">
+                    Signed in as <span id="accountEmail"></span><br>
+                    UID: <span id="accountUid"></span>
+                </div>
+                <div class="form-actions">
+                    <button id="accountSignOutBtn" class="btn btn-secondary">Sign Out</button>
+                    <button id="accountDeleteBtn" class="btn btn-danger">Delete Account</button>
+                    <button id="cancelAccountBtn" class="btn btn-primary">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/auth-config.js"></script>
+    <script src="js/auth-service.js"></script>
+    <script src="js/auth-ui.js"></script>
+    <script src="js/index.js"></script>
+</body>
+
+</html>

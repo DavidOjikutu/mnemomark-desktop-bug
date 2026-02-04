@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MnemoMark</title>
+    <link rel="stylesheet" href="css/tags-and-highlights.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>MnemoMark</h1>
+            <p class="subtitle">Manage all your tags and highlights</p>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stat">
+                <span class="stat-number" id="totalTags">0</span>
+                <span class="stat-label">Tags</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" id="totalHighlights">0</span>
+                <span class="stat-label">Highlights</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" id="totalPages">0</span>
+                <span class="stat-label">Pages</span>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="tags">Tags</button>
+            <button class="tab-btn" data-tab="highlights">All Highlights</button>
+        </div>
+
+        <div class="tab-content active" id="tagsTab">
+            <div class="section-header">
+                <h2>All Tags</h2>
+                <div class="header-actions">
+                    <input type="text" id="searchTagsInput" placeholder="Search tags..." class="search-input" style="min-width: 200px;">
+                    <button id="selectTagsBtn" class="btn btn-secondary">Select Tags</button>
+                    <button id="createTagBtn" class="btn btn-primary">Create New Tag</button>
+                </div>
+            </div>
+            <div id="tagSelectionPanel" class="tag-selection-panel" style="display: none;">
+                <div class="selection-controls">
+                    <div class="selection-criteria">
+                        <label>Select by:</label>
+                        <select id="selectionCriteria" class="filter-select">
+                            <option value="all">All Tags</option>
+                            <option value="name">Name contains</option>
+                            <option value="parent">Children of tag</option>
+                            <option value="no-parent">Tags with no parent</option>
+                        </select>
+                        <input type="text" id="selectionValue" class="search-input" placeholder="Enter value..." style="display: none; min-width: 200px;">
+                        <select id="selectionParentTag" class="filter-select" style="display: none;">
+                            <option value="">Select parent tag...</option>
+                        </select>
+                        <button id="applySelectionBtn" class="btn btn-primary">Apply Selection</button>
+                        <button id="clearSelectionBtn" class="btn btn-secondary">Clear Selection</button>
+                    </div>
+                    <div class="selection-actions" style="display: none;">
+                        <span id="selectedCount" style="margin-right: 12px; font-weight: 500;">0 tags selected</span>
+                        <button id="deleteSelectedBtn" class="btn btn-danger">Delete Selected</button>
+                        <button id="makeChildrenBtn" class="btn btn-primary">Make Children Of...</button>
+                    </div>
+                </div>
+            </div>
+            <div id="tagsList" class="tags-list"></div>
+        </div>
+
+        <div class="tab-content" id="highlightsTab">
+            <div class="section-header">
+                <h2>All Highlights</h2>
+                <div class="filter-controls">
+                    <select id="filterTag" class="filter-select">
+                        <option value="">All Tags</option>
+                    </select>
+                    <input type="text" id="searchHighlights" class="search-input" placeholder="Search highlights...">
+                    <button id="selectAllHighlightsBtn" class="btn btn-secondary">Select All Highlights</button>
+                </div>
+            </div>
+            <div id="highlightSelectionPanel" class="tag-selection-panel" style="display: none;">
+                <div class="selection-controls">
+                    <div class="selection-criteria">
+                        <label>Select by:</label>
+                        <select id="highlightSelectionCriteria" class="filter-select">
+                            <option value="all">All Highlights</option>
+                            <option value="tag">Tag</option>
+                            <option value="text">Text contains</option>
+                        </select>
+                        <select id="highlightSelectionTag" class="filter-select" style="display: none;">
+                            <option value="">Select tag...</option>
+                        </select>
+                        <input type="text" id="highlightSelectionText" class="search-input" placeholder="Enter text..." style="display: none; min-width: 200px;">
+                        <button id="applyHighlightSelectionBtn" class="btn btn-primary">Apply Selection</button>
+                        <button id="clearHighlightSelectionBtn" class="btn btn-danger">Clear Selection</button>
+                    </div>
+                    <div class="selection-actions highlight-selection-actions" id="highlightSelectionActions" style="display: none;">
+                        <span id="selectedHighlightsCount" style="margin-right: 12px; font-weight: 500;">0 highlights selected</span>
+                        <button id="addTagToSelectedHighlightsBtn" class="btn btn-primary">Add Tag to Selected</button>
+                        <button id="deleteSelectedHighlightsBtn" class="btn btn-danger">Delete Selected</button>
+                        <button id="copySelectedHighlightsBtn" class="btn btn-secondary">Copy Selected</button>
+                    </div>
+                </div>
+            </div>
+            <div id="highlightsList" class="highlights-list"></div>
+        </div>
+    </div>
+
+    <div id="tagModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Create Tag</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="tagName">Tag Name:</label>
+                    <input type="text" id="tagName" placeholder="Enter tag name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="tagColor">Color:</label>
+                    <input type="color" id="tagColor" value="#ffeb3b">
+                </div>
+
+                <div class="form-group">
+                    <label for="parentTags">Make child of... (select multiple):</label>
+                    <select id="parentTags" multiple size="5" class="multi-select"></select>
+                    <small>Hold Ctrl (Cmd on Mac) to select multiple parents</small>
+                </div>
+
+                <div id="currentParents" class="current-parents">
+                    <h3>Current Parents:</h3>
+                    <div id="parentsList" class="parents-list"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="childTags">Make parent of... (select multiple):</label>
+                    <select id="childTags" multiple size="5" class="multi-select"></select>
+                    <small>Hold Ctrl (Cmd on Mac) to select multiple children</small>
+                </div>
+
+                <div id="currentChildren" class="current-parents">
+                    <h3>Current Children:</h3>
+                    <div id="childrenList" class="parents-list"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button id="saveTagBtn" class="btn btn-primary">Save Tag</button>
+                    <button id="cancelTagBtn" class="btn btn-secondary">Cancel</button>
+                    <button id="deleteTagBtn" class="btn btn-danger" style="display: none;">Delete Tag</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="noteModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3 id="noteModalTitle">Add Note</h3>
+                <button class="modal-close" id="closeNoteModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="noteText">Note:</label>
+                    <textarea id="noteText" placeholder="Enter your note..." rows="5" style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px; font-family: inherit; font-size: 14px; resize: vertical;"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button id="saveNoteBtn" class="btn btn-primary">Save Note</button>
+                    <button id="cancelNoteBtn" class="btn btn-secondary">Cancel</button>
+                    <button id="deleteNoteBtn" class="btn btn-danger" style="display: none;">Delete Note</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="authModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2 id="authModalTitle">Sign In</h2>
+                <button class="modal-close" id="closeAuthModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="authError" class="auth-error" style="display: none;"></div>
+
+                <div id="signInForm">
+                    <div class="form-group">
+                        <label for="signInEmail">Email:</label>
+                        <input type="email" id="signInEmail" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signInPassword">Password:</label>
+                        <input type="password" id="signInPassword" placeholder="Enter your password" required>
+                    </div>
+                    <div class="form-group" style="margin-top: -10px; margin-bottom: 10px;">
+                        <button type="button" id="forgotPasswordBtn" class="btn-forgot-password">Forgot Password?</button>
+                    </div>
+                    <div class="form-actions">
+                        <button id="signInBtn" class="btn btn-primary">Sign In</button>
+                        <button id="switchToSignUpBtn" class="btn btn-secondary">Create Account</button>
+                    </div>
+                </div>
+
+                <div id="signUpForm" style="display: none;">
+                    <div class="form-group">
+                        <label for="signUpEmail">Email:</label>
+                        <input type="email" id="signUpEmail" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signUpPassword">Password:</label>
+                        <input type="password" id="signUpPassword" placeholder="Choose a password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password:</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm password" required>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="shareTagsCheckbox" checked>
+                            <span>Share tags between web extension and desktop app</span>
+                        </label>
+                        <small>If enabled, your tags will sync across both applications</small>
+                    </div>
+                    <div class="form-actions">
+                        <button id="signUpBtn" class="btn btn-primary">Create Account</button>
+                        <button id="switchToSignInBtn" class="btn btn-secondary">Already have an account?</button>
+                    </div>
+                </div>
+
+                <div id="forgotPasswordForm" style="display: none;">
+                    <div class="form-group">
+                        <label for="forgotPasswordEmail">Email:</label>
+                        <input type="email" id="forgotPasswordEmail" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-actions">
+                        <button id="sendResetEmailBtn" class="btn btn-primary">Send Reset Email</button>
+                        <button id="backToSignInBtn" class="btn btn-secondary">Back to Sign In</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="accountModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2>Account</h2>
+                <button class="modal-close" id="closeAccountModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 16px; color: #b0b0b0;">
+                    Signed in as <span id="accountEmail"></span><br>
+                    UID: <span id="accountUid"></span>
+                </div>
+                <div class="form-actions">
+                    <button id="accountSignOutBtn" class="btn btn-secondary">Sign Out</button>
+                    <button id="accountDeleteBtn" class="btn btn-danger">Delete Account</button>
+                    <button id="cancelAccountBtn" class="btn btn-primary">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth-config.js"></script>
+    <script src="js/auth-service.js"></script>
+    <script src="js/auth-ui.js"></script>
+    <script src="js/tags-and-highlights.js"></script>
+</body>
+</html>

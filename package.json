@@ -1,0 +1,50 @@
+{
+    "name": "mnemomark",
+    "version": "1.1.0",
+    "productName": "MnemoMark",
+    "description": "MnemoMark Desktop PDF Reader",
+    "main": "src/js/main.js",
+    "scripts": {
+        "start": "electron .",
+        "pack": "electron-builder --dir",
+        "dist": "electron-builder",
+        "postinstall": "electron-builder install-app-deps"
+    },
+    "author": "MnemoMark",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mnemomark/mnemomark.git"
+    },
+    "dependencies": {
+        "custom-electron-titlebar": "^3.0.9"
+    },
+    "devDependencies": {
+        "custom-electron-titlebar": "^3.0.9",
+        "electron": "^5.0.4",
+        "electron-builder": "^21.1.1"
+    },
+    "build": {
+        "appId": "mnemomark",
+        "productName": "MnemoMark",
+        "copyright": "Copyright (c) 2026 MnemoMark",
+        "buildVersion": "1.1.0",
+        "win": {
+            "target": "NSIS",
+            "icon": "./src/assets/icons/win/icon.ico",
+            "fileAssociations": {
+                "ext": "pdf",
+                "icon": "./src/assets/icons/win/file.ico"
+            }
+        },
+        "nsis": {
+            "artifactName": "${productName}Setup.${ext}",
+            "uninstallDisplayName": "${productName}"
+        }
+    },
+    "keywords": [
+        "electron",
+        "pdf",
+        "reader"
+    ]
+}

@@ -1,0 +1,38 @@
+<!--
+    Copyright (c) 2019 Sagar Gurtu
+    Licensed under the MIT License.
+    See License in the project root for license information.
+-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>MnemoMark - About</title>
+    <link rel="stylesheet" href="css/about.css">
+</head>
+
+<body>
+    <div id='titlebar'></div>
+    <img id='logo' src='assets/images/logo.png' />
+    <div id='info'>
+        <div class='info-header'>
+            <div id='label'>MnemoMark</div>
+            <div id='close'>&times;</div>
+        </div>
+        <div id='description'>A PDF reader for highlights and tags</div>
+        <div id='stats'>
+            <div>Version: 1.1.0</div>
+            <div>Author: MnemoMark</div>
+        </div>
+    </div>
+    <script>
+        const remote = require('electron').remote
+        document.getElementById('close').addEventListener('click', event => {
+            let window = remote.getCurrentWindow()
+            window.close()
+        })
+    </script>
+</body>
+
+</html>

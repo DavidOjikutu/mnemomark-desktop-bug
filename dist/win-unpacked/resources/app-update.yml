@@ -1,0 +1,4 @@
+owner: mnemomark
+repo: mnemomark
+provider: github
+updaterCacheDirName: mnemomark-updater
